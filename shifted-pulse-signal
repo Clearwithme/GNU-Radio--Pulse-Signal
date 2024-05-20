@@ -1,0 +1,53 @@
+import numpy as np
+from gnuradio import gr
+
+
+class blk(gr.sync_block):  # other base classes are basic_block, decim_block, interp_block
+    """Embedded Python Block example - a simple multiply const"""
+
+    def __init__(self, sample_rate= None, pri = None, pw = None, counter= 0, amplitude =None):  # only default arguments here
+        """arguments to this function show up as parameters in GRC"""
+        gr.sync_block.__init__(
+            self,
+            name='generate signal', 
+            in_sig=[],
+            out_sig=[np.complex64]
+        )
+        # if an attribute with the same name as a parameter is found,
+        # a callback is registered (properties work, too).
+        self.sample_rate = sample_rate
+        self.pri = pri
+        self.pw = pw
+        self.counter = counter
+        self.amplitude = amplitude
+
+        
+    def work(self, input_items, output_items):
+        current_pw = self.pw
+
+        
+        for i in range(len(output_items[0])):
+            self.counter += 1
+            
+            if (self.counter <= self.sample_rate*current_pw) :
+                output_items[0][i] = 1*self.amplitude
+            
+            elif (self.counter>= self.sample_rate*current_pw*4 and self.counter <= self.sample_rate*current_pw*8) :
+                output_items[0][i] = 1*self.amplitude
+
+                
+
+            else:
+                output_items[0][i] = 0
+
+
+            if (self.counter == round(self.sample_rate*self.pri,4) ):
+                self.counter = 0
+                self.sample_rate = round(self.sample_rate, 4)
+                self.pri += 0.02
+                self.pri = round(self.pri, 4)
+
+
+                
+                    
+        return len(output_items[0])
