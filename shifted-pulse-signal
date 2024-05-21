@@ -9,7 +9,7 @@ class blk(gr.sync_block):  # other base classes are basic_block, decim_block, in
         """arguments to this function show up as parameters in GRC"""
         gr.sync_block.__init__(
             self,
-            name='generate signal', 
+            name='shifted signal', 
             in_sig=[],
             out_sig=[np.complex64]
         )
@@ -44,7 +44,7 @@ class blk(gr.sync_block):  # other base classes are basic_block, decim_block, in
             if (self.counter == round(self.sample_rate*self.pri,4) ):
                 self.counter = 0
                 self.sample_rate = round(self.sample_rate, 4)
-                self.pri += 0.02
+                self.pri += 0.002
                 self.pri = round(self.pri, 4)
 
 
